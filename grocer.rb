@@ -1,28 +1,25 @@
 require 'pry'
 
 def consolidate_cart(cart)
-  new_cart = {}
-  cart.each do |ele|
-    ele.each do |k, inner_hash|
-      inner_hash[:count] = 1
-      if !new_cart.keys.include?(k)
-        new_cart[k] = inner_hash
-      elsif new_cart.keys.include?(k)
+  
+  cart.each_with_object({}) do |ele, result|
+    ele.each do |item, inner_hash|
+      if result[item]
         inner_hash[:count] += 1
+      else
+        inner_hash[:count] = 1
+        result[item] = inner_hash
       end
     end
   end
-  return new_cart
 end
 
 def apply_coupons(cart, coupons)
-
   coupons.each do |coupon|
     disc_item = coupon[:item]
     new_key = "#{disc_item} W/COUPON"
-
     if cart[disc_item] && cart[disc_item][:count] >= coupon[:num]
-      if cart["#{disc_item} W/ COUPON"]
+      if cart[new_key]
         cart[new_key][:count] += 1
       else
         cart[new_key] = {:price => coupon[:cost], :clearance => cart[disc_item][:clearance], :count => 1}

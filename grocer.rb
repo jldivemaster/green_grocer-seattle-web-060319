@@ -16,22 +16,22 @@ def consolidate_cart(cart)
 end
 
 def apply_coupons(cart, coupons)
-  #cart.each do |thing, item_hash|
-
-  consolidated_cart = consolidate_cart(cart)
+  
   coupons.each do |coupon|
     disc_item = coupon[:item]
-    if (consolidated_cart.keys.include?(disc_item)) && (!consolidated_cart.has_key?("#{disc_item} W/COUPON"))
-      consolidated_cart[disc_item][:count] -= (coupon[:num])
-      new_key = "#{disc_item} W/COUPON"
-      consolidated_cart[new_key] = {:price => coupon[:cost], :clearance => consolidated_cart[disc_item][:clearance], :count => 1}
-    elsif (consolidated_cart.keys.include?(disc_item)) && (consolidated_cart.has_key?("#{disc_item} W/COUPON"))
-      consolidated_cart[new_key][:count] += 1
-      consolidated_cart[disc_item][:count] -= (coupon[:num])
+    new_key = "#{disc_item} W/COUPON"
+
+    if cart[disc_item] && cart[disc_item][:count] >= coupon[:num]
+      if cart["#{disc_item} W/ COUPON"]
+        cart[new_key][:count] += 1
+      else 
+        cart[new_key] = {:price => coupon[:cost], :clearance => cart[disc_item][:clearance], :count => 1} 
+      end
+      
+      cart[disc_item][:count] -= (coupon[:num])
     end
   end
-end
-  return consolidated_cart
+  return cart
 end
 
 def apply_clearance(cart)

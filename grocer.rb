@@ -1,7 +1,7 @@
 require 'pry'
 
 def consolidate_cart(cart)
-  
+
   cart.each_with_object({}) do |ele, result|
     ele.each do |item, inner_hash|
       if result[item]
